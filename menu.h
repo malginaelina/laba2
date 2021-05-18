@@ -14,9 +14,8 @@ int chooseFunctionDiagonalMatrix();
 template <typename T> DiagonalMatrix<T>* inputDiagonalMatrix();
 DiagonalMatrix<complex>* InputComplexDiagonalMatrix();
 void MenuDiagonalMatrix();
-
 template <typename T> SquareMatrix<T>* InputSquareMatrix();
-SquareMatrix<complex>* inputComplexSquareMatrix();
+SquareMatrix<complex>* InputComplexSquareMatrix();
 int СhooseFunctionSquareMatrix();
 void MenuSquareMatrix();
 int menu();

@@ -89,7 +89,7 @@ public:
     }
 
     void print_complex() const {
-        cout << this->x << this->y << "i" << setw(3);
+        cout << this->x <<"+ (" << this->y << ")" << "i" << setw(3);
     }
 
     };

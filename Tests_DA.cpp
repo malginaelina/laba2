@@ -416,7 +416,7 @@ TEST(SquareMatrix, MultiplyOnScalar) {
 TEST(SquareMatrix, MultiplyMatrix) {
     auto* matrix1 = new SquareMatrix<int>(pointer, 2);
     auto* matrix2 = new SquareMatrix<int>(pointer, 2);
-    auto* Sum = matrix1->multiplyMatrix(matrix2);
+    auto* Sum = matrix1->MultiplyMatrix(matrix2);
     EXPECT_EQ(Sum->Get(0, 0), 7);
 }
 

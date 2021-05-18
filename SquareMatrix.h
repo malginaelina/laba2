@@ -6,13 +6,18 @@
 template <typename T> class SquareMatrix {
 private:
     int size;
-    ArraySequence<int>* array_sequence;
+    ArraySequence<T>* array_sequence;
 public:
 
     //Constructor
     SquareMatrix() {
         array_sequence = new ArraySequence<T>;
         size = 0;
+    }
+
+    SquareMatrix(int size_m) {
+        array_sequence = new ArraySequence<T>(size_m * size_m);
+        size = size_m;
     }
 
     SquareMatrix(T *array, int size_m) {
@@ -53,9 +58,10 @@ public:
         };
 
     template<typename U> U MatrixNorm() {
-            U sum = this->Get(0, 0) * this->Get(0, 0);
-            for (int i = 1; i < this->GetSize(); i++)
-                sum = sum + this->Get(i, i) * this->Get(i, i);
+            U sum = 0;
+            for (int i = 0; i < this->GetSize(); i++)
+                for (int j = 0; j < this->GetSize(); j++)
+                    sum = sum + this->Get(i, j) * this->Get(i, j);
             return sqrt(sum);
         }
 
@@ -80,7 +86,7 @@ public:
             return newArray;
         }
 
-        SquareMatrix<T> *multiplyMatrix(SquareMatrix<T> *matrix) {
+        SquareMatrix<T> *MultiplyMatrix(SquareMatrix<T> *matrix) {
             if (size != matrix->size)
                 throw length_error("Different size!");
             T *a = new T[size * size];
@@ -97,7 +103,9 @@ public:
             return newArray;
         }
 
-        void MultiplyRow(SquareMatrix<T> *matrix, int row, float scalar) {
+
+
+        void MultiplyRow(SquareMatrix<T> *matrix, int row, T scalar) {
             if (row < 1 || row > size)
                 throw out_of_range("Index out of range!");
             for (int i = 0; i < size; i++) {
@@ -114,7 +122,7 @@ public:
         }
     }
 
-    void MultiplyCol(SquareMatrix<T> *matrix, int col, float scalar) {
+    void MultiplyCol(SquareMatrix<T> *matrix, int col, T scalar) {
         if (col < 1 || col > size)
             throw out_of_range("Index out of range!");
         for (int i = 0; i < size; i++) {
@@ -131,5 +139,32 @@ public:
         }
     }
 
+    SquareMatrix<complex> *MultiplyMatrixComplex(SquareMatrix<complex> *matrix) {
+        if (size != matrix->size)
+            throw length_error("Different size!");
+        T *a = new T[size * size];
+        for (int i = 0; i < size; ++i) {
+            for (int j = 0; j < size; ++j) {
+                a[i * size + j] = complex(0,0);
+                for (int k = 0; k < size; ++k) {
+                    a[i * size + j] = a[i * size + j] +
+                                      array_sequence->Get(i * size + k) * matrix->array_sequence->Get(k * size + j);
+                }
+            }
+        }
+        auto *newArray = new SquareMatrix<T>(a, size);
+        return newArray;
+    }
     };
+
+template<>
+template<> inline
+complex SquareMatrix<complex>::MatrixNorm<complex>() {
+    complex sum = complex(0,0);
+    for (int i = 0; i<this->GetSize(); i++) {
+        for (int j = 0; j < this->GetSize(); j++)
+            sum = sum + ((this->Get(i,j))*(this->Get(i,j)));
+    }
+    return sum.sqrt_complex();
+}
 #endif //LABORATORY2_SQUAREMATRIX_H

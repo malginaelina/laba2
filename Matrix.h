@@ -96,15 +96,6 @@ public:
             return new_Matrix;
     };
 
-    T Get_c(int row, int col) {
-
-        if (row < 0 || col < 0 || col >= this->GetSize() || row >= this->GetSize())
-            throw out_of_range("Index out of range!");
-        if (row == col)
-            return matrix->Get(row);
-        return complex(0, 0);
-
-    }
 };
 
 template<>

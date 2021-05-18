@@ -8,13 +8,10 @@ int chooseTypeMatrix(){
     cout << "Select type of numbers: \n"
          << "\t1: int\n"
          << "\t2: float\n"
-         << "\t3: complex\n\n"
-         << "\t0: Return to select class\n"
+         << "\t3: complex\n"
+         << "\t0: Exit\n"
          << "Enter a number: ";
-    getchar();
     cin >> type;
-    cout<<endl;
-    getchar();
     return type;
 }
 
@@ -25,61 +22,76 @@ int chooseFunctionDiagonalMatrix(){
          << "\t1: Sum of Matrices\n"
          << "\t2: Multiplication of scalar and matrix\n"
          << "\t3: Matrix Norm\n"
-         << "\t0: Return to select type\n"
+         << "\t0: Exit\n"
          << "Enter a number: ";
     cin >> func;
     cout<<endl;
-    getchar();
     return func;
 }
 
 template <typename T>
 DiagonalMatrix<T>* inputDiagonalMatrix(){
     int dim;
-    cout << "Enter a dimension of matrix:";
+    cout << "Enter dimension of matrix:";
     cin >> dim;
     DiagonalMatrix<T>* matrix = new DiagonalMatrix<T>(dim);
-    cout << "Enter Main Diagonal Coordinates:" << endl;
+    cout << "Enter Main Diagonal Values:" << endl;
     int coord;
     for(int i = 0; i < dim; i++){
         cin >> coord;
-        matrix->Set(coord, i, i);//не уверена
+        matrix->Set(coord, i, i);
     }
     return matrix;
 }
 
 DiagonalMatrix<complex>* InputComplexDiagonalMatrix() {
     int dim;
-    cout << "Enter a dimension of Matrix:";
+    cout << "Enter dimension of Matrix:";
     cin >> dim;
     cout << endl;
     auto* matrix = new DiagonalMatrix<complex>(dim);
-    cout << "Enter Main Diagonal Coordinates (one by one):" << endl;
+    cout << "Enter Main Diagonal Values (one by one):" << endl;
     complex coord;
     float real, im;
     for(int i = 0; i < dim; i++){
-        cout << "Enter Real and Imaginary number (separated by a space): " << endl;
+        cout << "Enter Real and Imaginary part (separated by a space): " << endl;
         cin >> real >> im;
         coord = complex(real, im);
-        matrix->Set(coord,i,i);//не уверена
+        matrix->Set(coord,i,i);
     }
     return matrix;
 }
 
-void ComplexMatrixPrint(DiagonalMatrix<complex>& matrix) {
-    cout<<"YOUR MATRIX IS:"<<endl;
+void ComplexDiagonalMatrixPrint(DiagonalMatrix<complex>& matrix) {
     for (int i=0; i<matrix.GetSize(); i++) {
         for (int j=0; j<matrix.GetSize(); j++) {
-            matrix.Get(i,j).print_complex();
-            cout<<" ";
+            if (i==j) {
+                matrix.Get(i, j).print_complex();
+                cout << " ";
+            }
+            else complex(0,0).print_complex();
+            cout << " ";
         }
         cout<<endl;
     }
     cout<<endl;
 }
 
-void IntMatrixPrint(DiagonalMatrix<int>& matrix) {
-    cout<<"YOUR MATRIX IS:"<<endl;
+void IntDiagonalMatrixPrint(DiagonalMatrix<int>& matrix) {
+    for (int i=0; i<matrix.GetSize(); i++) {
+        for (int j=0; j<matrix.GetSize(); j++) {
+            if (i==j) {
+                cout << matrix.Get(i, j);
+                cout << " ";
+            }
+            else cout<< 0 << " ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+void RealDiagonalMatrixPrint(DiagonalMatrix<float>& matrix) {
     for (int i=0; i<matrix.GetSize(); i++) {
         for (int j=0; j<matrix.GetSize(); j++) {
             if (i==j) {
@@ -111,14 +123,18 @@ void MenuDiagonalMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "First matrix = " << endl << matrix1 << endl;
-                        cout << "Second matrix = " << endl << matrix2 << endl;
+                        cout << "First matrix = " << endl;
+                        IntDiagonalMatrixPrint(*matrix1);
+                        cout << "Second matrix = " << endl;
+                        IntDiagonalMatrixPrint(*matrix2);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     auto* sum = matrix1->SumOfMatrix(matrix2);
-                    cout << "Sum of first matrix and second matrix = " << endl << sum << endl << endl;
+                    cout << "Sum of first matrix and second matrix = " << endl;
+                    IntDiagonalMatrixPrint(*sum);
+
                 }
                 else if (function == 2){
                     cout << "Enter matrix:" << endl;
@@ -131,7 +147,7 @@ void MenuDiagonalMatrix(){
                     cin >> buf;
                     if(buf == 1){
                         cout << "Matrix = " << endl;
-                        IntMatrixPrint(*matrix);
+                        IntDiagonalMatrixPrint(*matrix);
                         cout << "Scalar = " << scalar << endl;
                     }
                     else if (buf != 0){
@@ -139,7 +155,7 @@ void MenuDiagonalMatrix(){
                     }
                     auto MatrixMult = matrix->MultiplyOnScalar(scalar);
                     cout << "Multiplication of matrix and scalar = " << endl;
-                    IntMatrixPrint(*MatrixMult);
+                    IntDiagonalMatrixPrint(*MatrixMult);
                 }
                 else if (function == 3){
                     cout << "Enter matrix:" << endl;
@@ -148,7 +164,8 @@ void MenuDiagonalMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix1 << endl;
+                        cout << "Matrix = " << endl;
+                        IntDiagonalMatrixPrint(*matrix1);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
@@ -159,7 +176,7 @@ void MenuDiagonalMatrix(){
                 else if (function == 0)
                     break;
                 else
-                    throw invalid_argument("Incorrect number"); // ошибку выдать
+                    throw invalid_argument("Incorrect number");
             }
         }
         else if (type == 2){
@@ -174,14 +191,17 @@ void MenuDiagonalMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "First matrix = " << endl << matrix1 << endl;
-                        cout << "Second matrix = " << endl << matrix2 << endl;
+                        cout << "First matrix = " << endl;
+                        RealDiagonalMatrixPrint(*matrix1);
+                        cout << "Second matrix = " << endl;
+                        RealDiagonalMatrixPrint(*matrix2);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     auto* sum = matrix1->SumOfMatrix(matrix2);
-                    cout << "Sum of first matrix and second matrix = " << endl << sum << endl;
+                    cout << "Sum of first matrix and second matrix = " << endl;
+                    RealDiagonalMatrixPrint(*sum);
                 }
                 else if (function == 2){
                     cout << "Enter matrix:" << endl;
@@ -193,14 +213,16 @@ void MenuDiagonalMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix << endl;
+                        cout << "Matrix = " << endl;
+                        RealDiagonalMatrixPrint(*matrix);
                         cout << "Scalar = " << scalar << endl;
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     auto MatrixMult = matrix->MultiplyOnScalar(scalar);
-                    cout << "Multiplication of matrix and scalar = " << endl << MatrixMult << endl;
+                    cout << "Multiplication of matrix and scalar = " << endl;
+                    RealDiagonalMatrixPrint(*MatrixMult);
                 }
                 else if (function == 3){
                     cout << "Enter matrix:" << endl;
@@ -209,7 +231,8 @@ void MenuDiagonalMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix1 << endl;
+                        cout << "Matrix = " << endl;
+                        RealDiagonalMatrixPrint(*matrix1);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
@@ -219,7 +242,7 @@ void MenuDiagonalMatrix(){
                 }
                 else if (function == 0) break;
                 else
-                    throw invalid_argument("Incorrect number"); //выдавать ошибку
+                    throw invalid_argument("Incorrect number");
             }
         }
         else if (type == 3){
@@ -235,10 +258,10 @@ void MenuDiagonalMatrix(){
                     cin >> buf;
                     if(buf == 1){
                         cout << "First matrix = " << endl;
-                        ComplexMatrixPrint(*matrix1);
+                        ComplexDiagonalMatrixPrint(*matrix1);
                         cout << endl;
                         cout << "Second matrix = " << endl;
-                        ComplexMatrixPrint(*matrix2);
+                        ComplexDiagonalMatrixPrint(*matrix2);
                         cout << endl;
                     }
                     else if (buf != 0){
@@ -246,7 +269,7 @@ void MenuDiagonalMatrix(){
                     }
                     auto* sum = matrix1->SumOfMatrix(matrix2);
                     cout << "Sum of first matrix and second matrix = " << endl;
-                    ComplexMatrixPrint(*sum);
+                    ComplexDiagonalMatrixPrint(*sum);
                     cout << endl;
                 }
                 else if (function == 2){
@@ -263,7 +286,7 @@ void MenuDiagonalMatrix(){
                     cin >> buf;
                     if(buf == 1){
                         cout << "Matrix = " << endl;
-                        ComplexMatrixPrint(*matrix);
+                        ComplexDiagonalMatrixPrint(*matrix);
                         cout << endl;
                         cout << "Scalar = ";
                         scalar.print_complex();
@@ -274,7 +297,7 @@ void MenuDiagonalMatrix(){
                     }
                     auto MatrixMult = matrix->MultiplyOnScalar(scalar);
                     cout << "Multiplication of matrix and scalar = " << endl;
-                    ComplexMatrixPrint(*MatrixMult);
+                    ComplexDiagonalMatrixPrint(*MatrixMult);
                     cout << endl;
                 }
                 else if (function == 3){
@@ -285,7 +308,7 @@ void MenuDiagonalMatrix(){
                     cin >> buf;
                     if(buf == 1){
                         cout << "Matrix = " << endl;
-                        ComplexMatrixPrint(*matrix1);
+                        ComplexDiagonalMatrixPrint(*matrix1);
                         cout << endl;
                     }
                     else if (buf != 0){
@@ -297,7 +320,7 @@ void MenuDiagonalMatrix(){
                 }
                 else if (function == 0) break;
                 else
-                    throw invalid_argument("Incorrect number");// было cout << "Enter the correct number!" << endl;
+                    throw invalid_argument("Incorrect number");
             }
         }
     }
@@ -314,48 +337,88 @@ int СhooseFunctionSquareMatrix(){
          << "\t4: Matrix Norm\n"
          << "\t5: Multiplication of scalar and row\n"
          << "\t6: Addition of row and row\n"
-         << "\t0: Return to select type\n"
+         << "\t7: Multiplication of scalar and column\n"
+         << "\t8: Addition of column and column\n"
+         << "\t0: Exit\n"
          << "Enter a number: ";
     cin >> func;
     cout << endl;
     return func;
 }
 
-/*template <typename T>
+
+template <typename T>
 SquareMatrix<T>* InputSquareMatrix(){
     int dim;
-    cout << "Enter a dimension of matrix:";
+    cout << "Enter dimension of matrix:";
     cin >> dim;
-    cout << endl;
-    auto* matrix = new SquareMatrix<T>();
-    cout << "Enter Coordinates:" << endl;
-    T coord;
-    for(int i = 0; i < dim*dim; i++){
-        cin >> coord;
-        matrix->Append(coord);//не уверена
+    SquareMatrix<T>* matrix = new SquareMatrix<T>(dim);
+    cout << "Enter Values:" << endl;
+    int coord;
+    for(int i = 0; i < dim; i++){
+        for(int j = 0; j < dim; j++) {
+            cin >> coord;
+            matrix->Set(coord, i, j);
+        }
     }
     return matrix;
-}*/
+}
 
-/*SquareMatrix<complex>* inputComplexSquareMatrix() {
+SquareMatrix<complex>* InputComplexSquareMatrix() {
     int dim;
-    cout << "Enter a dimension of Matrix:";
+    cout << "Enter dimension of Matrix:";
     cin >> dim;
     cout << endl;
-    auto* matrix = new SquareMatrix<complex>();
-    cout << "Enter Coordinates (one by one):" << endl;
+    auto* matrix = new SquareMatrix<complex>(dim);
+    cout << "Enter Main Diagonal Values (one by one):" << endl;
     complex coord;
     float real, im;
     for(int i = 0; i < dim; i++){
-        cout << "Enter Real and Imaginary number (separated by a space): " << endl;
-        cin >> real >> im;
-        coord = complex(real, im);
-        matrix->Append(coord);//не уверена
+        for(int j = 0; j < dim; j++) {
+            cout << "Enter Real and Imaginary part (separated by a space): " << endl;
+            cin >> real >> im;
+            coord = complex(real, im);
+            matrix->Set(coord, i, j);
+        }
     }
     return matrix;
-}*/
+}
 
-/*void MenuSquareMatrix(){
+void ComplexSquareMatrixPrint(SquareMatrix<complex>& matrix) {
+    for (int i=0; i<matrix.GetSize(); i++) {
+        for (int j=0; j<matrix.GetSize(); j++) {
+            matrix.Get(i, j).print_complex();
+            cout << " ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+void IntSquareMatrixPrint(SquareMatrix<int>& matrix) {
+    for (int i=0; i<matrix.GetSize(); i++) {
+        for (int j=0; j<matrix.GetSize(); j++) {
+            cout << matrix.Get(i, j);
+            cout << " ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+void RealSquareMatrixPrint(SquareMatrix<float>& matrix) {
+    for (int i=0; i<matrix.GetSize(); i++) {
+        for (int j=0; j<matrix.GetSize(); j++) {
+            cout << matrix.Get(i, j);
+            cout << " ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+
+void MenuSquareMatrix(){
     while(true){
         int type = chooseTypeMatrix(); // 1 - int ; 2 - float ; 3 - complex ; 0 - return to select class
         if(type == 0){
@@ -373,14 +436,17 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "First matrix = " << endl << matrix1 << endl;
-                        cout << "Second matrix = " << endl << matrix2 << endl;
+                        cout << "First matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix1);
+                        cout << "Second matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix2);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     auto* sum = matrix1->SumOfMatrix(matrix2);
-                    cout << "Sum of first matrix and second matrix = " << endl << sum << endl;
+                    cout << "Sum of first matrix and second matrix = " << endl;
+                    IntSquareMatrixPrint(*sum);
                 }
                 else if (function == 2){
                     cout << "Enter matrix:" << endl;
@@ -392,14 +458,15 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix << endl;
+                        cout << "Matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix);
                         cout << "Scalar = " << scalar << endl;
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     auto MatrixMult = matrix->MultiplyOnScalar(scalar);
-                    cout << "Multiplication of matrix and scalar = " << endl << MatrixMult << endl << endl;
+                    cout << "Multiplication of matrix and scalar = " << endl << MatrixMult << endl;
                 }
                 else if (function == 3){
                     cout << "Enter first matrix:" << endl;
@@ -410,14 +477,17 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "First matrix = " << endl << matrix1 << endl;
-                        cout << "Second matrix = " << endl << matrix2 << endl;
+                        cout << "First matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix1);
+                        cout << "Second matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix2);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
-                    auto* mult = matrix1->multiplyMatrix(matrix2);
-                    cout << "Multiplication of first matrix and second matrix = " << endl << mult << endl;
+                    auto* mult = matrix1->MultiplyMatrix(matrix2);
+                    cout << "Multiplication of first matrix and second matrix = " << endl;
+                    IntSquareMatrixPrint(*mult);
                 }
                 else if (function == 4){
                     cout << "Enter matrix:" << endl;
@@ -426,7 +496,8 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix1 << endl;
+                        cout << "Matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix1);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
@@ -437,7 +508,7 @@ SquareMatrix<T>* InputSquareMatrix(){
                 else if(function == 5) { //Multiplication of scalar and row
                     cout << "Enter matrix:" << endl;
                     auto* matrix = InputSquareMatrix<int>();
-                    cout << "Enter number row:" << endl;
+                    cout << "Enter number of row:" << endl;
                     int numRow;
                     cin >> numRow;
                     cout << "Enter scalar: " << endl;
@@ -447,39 +518,89 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix << endl;
+                        cout << "Matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     matrix->MultiplyRow(matrix, numRow, scalar);
-                    cout << "Multiplication of scalar and row = " << endl << matrix << endl;
+                    cout << "Multiplication of scalar and row = " << endl;
+                    IntSquareMatrixPrint(*matrix);
                 }
                 else if(function == 6){ //Addition of row and row
                     cout << "Enter matrix:" << endl;
                     auto* matrix = InputSquareMatrix<int>();
-                    cout << "Enter number first row:" << endl;
+                    cout << "Enter number of first row:" << endl;
                     int numRow1;
                     cin >> numRow1;
-                    cout << "Enter number second row:" << endl;
+                    cout << "Enter number of second row:" << endl;
                     int numRow2;
                     cin >> numRow2;
                     cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix << endl;
+                        cout << "Matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     matrix->AddRowToRow(matrix, numRow1, numRow2);
-                    cout << "Addition of row and row = " << endl << matrix << endl;
+                    cout << "Addition of row and row = " << endl;
+                    IntSquareMatrixPrint(*matrix);
+                }
+                else if(function == 7) { //Multiplication of scalar and column
+                    cout << "Enter matrix:" << endl;
+                    auto* matrix = InputSquareMatrix<int>();
+                    cout << "Enter number of column:" << endl;
+                    int numCol;
+                    cin >> numCol;
+                    cout << "Enter scalar: " << endl;
+                    int scalar;
+                    cin >> scalar;
+                    cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
+                    int buf;
+                    cin >> buf;
+                    if(buf == 1){
+                        cout << "Matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix);
+                    }
+                    else if (buf != 0){
+                        throw invalid_argument("Incorrect number");
+                    }
+                    matrix->MultiplyCol(matrix, numCol, scalar);
+                    cout << "Multiplication of scalar and column = " << endl;
+                    IntSquareMatrixPrint(*matrix);
+                }
+                else if(function == 8){ //Addition of column and column
+                    cout << "Enter matrix:" << endl;
+                    auto* matrix = InputSquareMatrix<int>();
+                    cout << "Enter number of first column:" << endl;
+                    int numCol1;
+                    cin >> numCol1;
+                    cout << "Enter number of second column:" << endl;
+                    int numCol2;
+                    cin >> numCol2;
+                    cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
+                    int buf;
+                    cin >> buf;
+                    if(buf == 1){
+                        cout << "Matrix = " << endl;
+                        IntSquareMatrixPrint(*matrix);
+                    }
+                    else if (buf != 0){
+                        throw invalid_argument("Incorrect number");
+                    }
+                    matrix->AddColToCol(matrix, numCol1, numCol2);
+                    cout << "Addition of column and column = " << endl;
+                    IntSquareMatrixPrint(*matrix);
                 }
                 else if (function == 0)
                     break;
                 else
-                    throw invalid_argument("Incorrect number"); // ошибку выдать
+                    throw invalid_argument("Incorrect number");
             }
         }
         else if (type == 2){
@@ -494,14 +615,17 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "First matrix = " << endl << matrix1 << endl;
-                        cout << "Second matrix = " << endl << matrix2 << endl;
+                        cout << "First matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix1);
+                        cout << "Second matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix2);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     auto* sum = matrix1->SumOfMatrix(matrix2);
-                    cout << "Sum of first matrix and second matrix = " << endl << sum << endl;
+                    cout << "Sum of first matrix and second matrix = " << endl;
+                    RealSquareMatrixPrint(*sum);
                 }
                 else if (function == 2){
                     cout << "Enter matrix:" << endl;
@@ -513,14 +637,16 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix << endl;
+                        cout << "Matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix);
                         cout << "Scalar = " << scalar << endl;
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     auto MatrixMult = matrix->MultiplyOnScalar(scalar);
-                    cout << "Multiplication of matrix and scalar = " << endl << MatrixMult << endl;
+                    cout << "Multiplication of matrix and scalar = " << endl;
+                    RealSquareMatrixPrint(*MatrixMult);
                 }
                 else if (function == 3){
                     cout << "Enter first matrix:" << endl;
@@ -531,14 +657,17 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "First matrix = " << endl << matrix1 << endl;
-                        cout << "Second matrix = " << endl << matrix2 << endl;
+                        cout << "First matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix1);
+                        cout << "Second matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix2);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
-                    auto* mult = matrix1->multiplyMatrix(matrix2);
-                    cout << "Multiplication of first matrix and second matrix = " << endl << mult << endl;
+                    auto* mult = matrix1->MultiplyMatrix(matrix2);
+                    cout << "Multiplication of first matrix and second matrix = " << endl;
+                    RealSquareMatrixPrint(*mult);
                 }
                 else if (function == 4){
                     cout << "Enter matrix:" << endl;
@@ -547,7 +676,8 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix1 << endl;
+                        cout << "Matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix1);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
@@ -568,13 +698,15 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix << endl;
+                        cout << "Matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     matrix->MultiplyRow(matrix, numRow, scalar);
-                    cout << "Multiplication of scalar and row = " << endl << matrix << endl;
+                    cout << "Multiplication of scalar and row = " << endl;
+                    RealSquareMatrixPrint(*matrix);
                 }
                 else if(function == 6){ //Addition of row and row
                     cout << "Enter matrix:" << endl;
@@ -589,18 +721,66 @@ SquareMatrix<T>* InputSquareMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix << endl;
+                        cout << "Matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix);
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     matrix->AddRowToRow(matrix, numRow1, numRow2);
-                    cout << "Addition of row and row = " << endl << matrix << endl;
+                    cout << "Addition of row and row = " << endl;
+                    RealSquareMatrixPrint(*matrix);
+                }
+                else if(function == 7) { //Multiplication of scalar and column
+                    cout << "Enter matrix:" << endl;
+                    auto* matrix = InputSquareMatrix<float>();
+                    cout << "Enter number of column:" << endl;
+                    int numCol;
+                    cin >> numCol;
+                    cout << "Enter scalar: " << endl;
+                    float scalar;
+                    cin >> scalar;
+                    cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
+                    int buf;
+                    cin >> buf;
+                    if(buf == 1){
+                        cout << "Matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix);
+                    }
+                    else if (buf != 0){
+                        throw invalid_argument("Incorrect number");
+                    }
+                    matrix->MultiplyCol(matrix, numCol, scalar);
+                    cout << "Multiplication of scalar and column = " << endl;
+                    RealSquareMatrixPrint(*matrix);
+                }
+                else if(function == 8){ //Addition of column and column
+                    cout << "Enter matrix:" << endl;
+                    auto* matrix = InputSquareMatrix<float>();
+                    cout << "Enter number of first column:" << endl;
+                    int numCol1;
+                    cin >> numCol1;
+                    cout << "Enter number of second column:" << endl;
+                    int numCol2;
+                    cin >> numCol2;
+                    cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
+                    int buf;
+                    cin >> buf;
+                    if(buf == 1){
+                        cout << "Matrix = " << endl;
+                        RealSquareMatrixPrint(*matrix);
+                    }
+                    else if (buf != 0){
+                        throw invalid_argument("Incorrect number");
+                    }
+                    matrix->AddColToCol(matrix, numCol1, numCol2);
+                    cout << "Addition of column and column = " << endl;
+                    RealSquareMatrixPrint(*matrix);
                 }
                 else if (function == 0)
                     break;
                 else
-                    throw invalid_argument("Incorrect number"); // ошибку выдать
+                    throw invalid_argument("Incorrect number");
             }
         }
         else if (type == 3){
@@ -608,18 +788,18 @@ SquareMatrix<T>* InputSquareMatrix(){
                 int function = СhooseFunctionSquareMatrix();  // 1 - sum; 2 - mult scalar and matrix; 3 - mult two matrix; 4 - norm; 5 -Multiplication of scalar and row;
                 if (function == 1){
                     cout << "Enter first matrix:" << endl;
-                    auto* matrix1 = InputComplexDiagonalMatrix();
+                    auto* matrix1 = InputComplexSquareMatrix();
                     cout << "Enter second matrix:" << endl;
-                    auto* matrix2 = InputComplexDiagonalMatrix();
+                    auto* matrix2 = InputComplexSquareMatrix();
                     cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
                     int buf;
                     cin >> buf;
                     if(buf == 1){
                         cout << "First matrix = " << endl;
-                        matrix1->ComplexMatrixPrint();
+                        ComplexSquareMatrixPrint(*matrix1);
                         cout << endl;
                         cout << "Second matrix = " << endl;
-                        matrix2->ComplexMatrixPrint();
+                        ComplexSquareMatrixPrint(*matrix2);
                         cout << endl;
                     }
                     else if (buf != 0){
@@ -627,12 +807,12 @@ SquareMatrix<T>* InputSquareMatrix(){
                     }
                     auto* sum = matrix1->SumOfMatrix(matrix2);
                     cout << "Sum of first matrix and second matrix = " << endl;
-                    sum->ComplexMatrixPrint();
+                    ComplexSquareMatrixPrint(*sum);
                     cout << endl;
                 }
                 else if (function == 2){
                     cout << "Enter matrix:" << endl;
-                    auto* matrix = InputComplexDiagonalMatrix();
+                    auto* matrix = InputComplexSquareMatrix();
                     cout << "Enter scalar: " << endl;
                     int scalar;
                     cin >> scalar;
@@ -641,50 +821,50 @@ SquareMatrix<T>* InputSquareMatrix(){
                     cin >> buf;
                     if(buf == 1){
                         cout << "Matrix = " << endl;
-                        matrix->ComplexMatrixPrint();
+                        ComplexSquareMatrixPrint(*matrix);
                         cout << endl;
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
-                    auto MatrixMult = matrix->ScalarMultiplyMatrix(scalar);
+                    auto MatrixMult = matrix->MultiplyOnScalar(scalar);
                     cout << "Multiplication of matrix and scalar = " << endl;
-                    MatrixMult->ComplexMatrixPrint();
+                    ComplexSquareMatrixPrint(*MatrixMult);
                     cout << endl;
                 }
                 else if (function == 3){
                     cout << "Enter first matrix:" << endl;
-                    auto* matrix1 = InputComplexDiagonalMatrix();
+                    auto* matrix1 = InputComplexSquareMatrix();
                     cout << "Enter second matrix:" << endl;
-                    auto* matrix2 = InputComplexDiagonalMatrix();
+                    auto* matrix2 = InputComplexSquareMatrix();
                     cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
                     int buf;
                     cin >> buf;
                     if(buf == 1){
                         cout << "First matrix = " << endl;
-                        matrix1->ComplexMatrixPrint();
+                        ComplexSquareMatrixPrint(*matrix1);
                         cout << endl;
                         cout << "Second matrix = " << endl;
-                        matrix2->ComplexMatrixPrint();
+                        ComplexSquareMatrixPrint(*matrix2);
                         cout << endl;
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
-                    auto* mult = matrix1->MultiplyMatrix(matrix2);
+                    auto* mult = matrix1->MultiplyMatrixComplex(matrix2);
                     cout << "Multiplication first matrix and second matrix = " << endl;
-                    mult->ComplexMatrixPrint();
+                    ComplexSquareMatrixPrint(*mult);
                     cout << endl;
                 }
                 else if (function == 4){
                     cout << "Enter matrix:" << endl;
-                    auto* matrix1 = InputComplexDiagonalMatrix();
+                    auto* matrix1 = InputComplexSquareMatrix();
                     cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
                     int buf;
                     cin >> buf;
                     if(buf == 1){
                         cout << "Matrix = " << endl;
-                        matrix1->ComplexMatrixPrint();
+                        ComplexSquareMatrixPrint(*matrix1);
                         cout << endl;
                     }
                     else if (buf != 0){
@@ -697,7 +877,7 @@ SquareMatrix<T>* InputSquareMatrix(){
                 }
                 else if(function == 5) { //Multiplication of scalar and row
                     cout << "Enter matrix:" << endl;
-                    auto* matrix = InputComplexDiagonalMatrix();
+                    auto* matrix = InputComplexSquareMatrix();
                     cout << "Enter number row:" << endl;
                     int numRow;
                     cin >> numRow;
@@ -711,7 +891,7 @@ SquareMatrix<T>* InputSquareMatrix(){
                     cin >> buf;
                     if(buf == 1){
                         cout << "Matrix = " << endl;
-                        matrix->ComplexMatrixPrint();
+                        ComplexSquareMatrixPrint(*matrix);
                         cout << endl;
                     }
                     else if (buf != 0){
@@ -722,7 +902,7 @@ SquareMatrix<T>* InputSquareMatrix(){
                 }
                 else if(function == 6){ //Addition of row and row
                     cout << "Enter matrix:" << endl;
-                    auto* matrix = InputComplexDiagonalMatrix();
+                    auto* matrix = InputComplexSquareMatrix();
                     cout << "Enter number first row:" << endl;
                     int numRow1;
                     cin >> numRow1;
@@ -734,7 +914,7 @@ SquareMatrix<T>* InputSquareMatrix(){
                     cin >> buf;
                     if(buf == 1){
                         cout << "Matrix = " << endl;
-                        matrix->ComplexMatrixPrint();
+                        ComplexSquareMatrixPrint(*matrix);
                         cout << endl;
                     }
                     else if (buf != 0){
@@ -743,14 +923,62 @@ SquareMatrix<T>* InputSquareMatrix(){
                     matrix->AddRowToRow(matrix, numRow1, numRow2);
                     cout << "Addition of row and row = " << endl << matrix << endl;
                 }
+                else if(function == 7) { //Multiplication of scalar and column
+                    cout << "Enter matrix:" << endl;
+                    auto* matrix = InputComplexSquareMatrix();
+                    cout << "Enter number of column:" << endl;
+                    int numCol;
+                    cin >> numCol;
+                    cout << "Enter scalar: " << endl;
+                    complex scalar;
+                    float real, imag;
+                    cin >> real >> imag;
+                    scalar = complex(real, imag);
+                    cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
+                    int buf;
+                    cin >> buf;
+                    if(buf == 1){
+                        cout << "Matrix = " << endl;
+                        ComplexSquareMatrixPrint(*matrix);
+                    }
+                    else if (buf != 0){
+                        throw invalid_argument("Incorrect number");
+                    }
+                    matrix->MultiplyCol(matrix, numCol, scalar);
+                    cout << "Multiplication of scalar and column = " << endl;
+                    ComplexSquareMatrixPrint(*matrix);
+                }
+                else if(function == 8){ //Addition of column and column
+                    cout << "Enter matrix:" << endl;
+                    auto* matrix = InputComplexSquareMatrix();
+                    cout << "Enter number of first column:" << endl;
+                    int numCol1;
+                    cin >> numCol1;
+                    cout << "Enter number of second column:" << endl;
+                    int numCol2;
+                    cin >> numCol2;
+                    cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
+                    int buf;
+                    cin >> buf;
+                    if(buf == 1){
+                        cout << "Matrix = " << endl;
+                        ComplexSquareMatrixPrint(*matrix);
+                    }
+                    else if (buf != 0){
+                        throw invalid_argument("Incorrect number");
+                    }
+                    matrix->AddColToCol(matrix, numCol1, numCol2);
+                    cout << "Addition of column and column = " << endl;
+                    ComplexSquareMatrixPrint(*matrix);
+                }
                 else if (function == 0)
                     break;
                 else
-                    throw invalid_argument("Incorrect number"); // ошибку выдать
+                    throw invalid_argument("Incorrect number");
             }
         }
     }
-}*/
+}
 
 ///Menu
 int menu(){
@@ -766,8 +994,7 @@ int menu(){
             MenuDiagonalMatrix();
         }
         else if (classType == 2){
-            cout<<":)";
-            //MenuSquareMatrix();
+            MenuSquareMatrix();
         }
         else if (classType == 0){
             break;
