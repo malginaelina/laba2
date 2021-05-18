@@ -13,6 +13,10 @@ public:
         matrix = new ArraySequence<T>;
     };
 
+    DiagonalMatrix(int count) {
+        matrix = new ArraySequence<T>(count);
+    };
+
     DiagonalMatrix(T *items, int count) {
         matrix = new ArraySequence<T>(items, count);
     }

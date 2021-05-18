@@ -27,35 +27,20 @@ int chooseFunctionDiagonalMatrix(){
          << "\t3: Matrix Norm\n"
          << "\t0: Return to select type\n"
          << "Enter a number: ";
-    getchar();
     cin >> func;
     cout<<endl;
     getchar();
     return func;
 }
 
-DiagonalMatrix<int>* inputDiagonalMatrix_int(){
+template <typename T>
+DiagonalMatrix<T>* inputDiagonalMatrix(){
     int dim;
     cout << "Enter a dimension of matrix:";
     cin >> dim;
-    DiagonalMatrix<int>* matrix = new DiagonalMatrix<int>();
+    DiagonalMatrix<T>* matrix = new DiagonalMatrix<T>(dim);
     cout << "Enter Main Diagonal Coordinates:" << endl;
     int coord;
-    for(int i = 0; i < dim; i++){
-        cin >> coord;
-        matrix->Set(coord, i, i);//не уверена
-    }
-    return matrix;
-}
-
-DiagonalMatrix<float>* inputDiagonalMatrix_real(){
-    int dim;
-    cout << "Enter a dimension of matrix:";
-    cin >> dim;
-    cout << endl;
-    DiagonalMatrix<float>* matrix = new DiagonalMatrix<float>();
-    cout << "Enter Main Diagonal Coordinates:" << endl;
-    float coord;
     for(int i = 0; i < dim; i++){
         cin >> coord;
         matrix->Set(coord, i, i);//не уверена
@@ -68,7 +53,7 @@ DiagonalMatrix<complex>* InputComplexDiagonalMatrix() {
     cout << "Enter a dimension of Matrix:";
     cin >> dim;
     cout << endl;
-    auto* matrix = new DiagonalMatrix<complex>();
+    auto* matrix = new DiagonalMatrix<complex>(dim);
     cout << "Enter Main Diagonal Coordinates (one by one):" << endl;
     complex coord;
     float real, im;
@@ -83,11 +68,25 @@ DiagonalMatrix<complex>* InputComplexDiagonalMatrix() {
 
 void ComplexMatrixPrint(DiagonalMatrix<complex>& matrix) {
     cout<<"YOUR MATRIX IS:"<<endl;
-    cout<<endl;
     for (int i=0; i<matrix.GetSize(); i++) {
         for (int j=0; j<matrix.GetSize(); j++) {
             matrix.Get(i,j).print_complex();
             cout<<" ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+void IntMatrixPrint(DiagonalMatrix<int>& matrix) {
+    cout<<"YOUR MATRIX IS:"<<endl;
+    for (int i=0; i<matrix.GetSize(); i++) {
+        for (int j=0; j<matrix.GetSize(); j++) {
+            if (i==j) {
+                cout << matrix.Get(i, j);
+                cout << " ";
+            }
+            else cout<< 0 << " ";
         }
         cout<<endl;
     }
@@ -105,9 +104,9 @@ void MenuDiagonalMatrix(){
                 int function = chooseFunctionDiagonalMatrix();  // 1 - sum; 2 - mult scalar and matrix; 3 - matrix norm; 0 - return
                 if (function == 1){
                     cout << "Enter first matrix:" << endl;
-                    auto* matrix1 = inputDiagonalMatrix_int();
+                    auto* matrix1 = inputDiagonalMatrix<int>();
                     cout << "Enter second matrix:" << endl;
-                    auto* matrix2 = inputDiagonalMatrix_int();
+                    auto* matrix2 = inputDiagonalMatrix<int>();
                     cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
                     int buf;
                     cin >> buf;
@@ -123,7 +122,7 @@ void MenuDiagonalMatrix(){
                 }
                 else if (function == 2){
                     cout << "Enter matrix:" << endl;
-                    auto* matrix = inputDiagonalMatrix_int();
+                    auto* matrix = inputDiagonalMatrix<int>();
                     cout << "Enter scalar: " << endl;
                     int scalar;
                     cin >> scalar;
@@ -131,18 +130,20 @@ void MenuDiagonalMatrix(){
                     int buf;
                     cin >> buf;
                     if(buf == 1){
-                        cout << "Matrix = " << endl << matrix << endl;
+                        cout << "Matrix = " << endl;
+                        IntMatrixPrint(*matrix);
                         cout << "Scalar = " << scalar << endl;
                     }
                     else if (buf != 0){
                         throw invalid_argument("Incorrect number");
                     }
                     auto MatrixMult = matrix->MultiplyOnScalar(scalar);
-                    cout << "Multiplication of matrix and scalar = " << endl << MatrixMult << endl;
+                    cout << "Multiplication of matrix and scalar = " << endl;
+                    IntMatrixPrint(*MatrixMult);
                 }
                 else if (function == 3){
                     cout << "Enter matrix:" << endl;
-                    auto* matrix1 = inputDiagonalMatrix_int();
+                    auto* matrix1 = inputDiagonalMatrix<int>();
                     cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
                     int buf;
                     cin >> buf;
@@ -166,9 +167,9 @@ void MenuDiagonalMatrix(){
                 int function = chooseFunctionDiagonalMatrix();  // 1 - sum; 2 - mult scalar and matrix; 3 - matrix norm; 0 - return
                 if (function == 1){
                     cout << "Enter first matrix:" << endl;
-                    auto* matrix1 = inputDiagonalMatrix_real();
+                    auto* matrix1 = inputDiagonalMatrix<float>();
                     cout << "Enter second matrix:" << endl;
-                    auto* matrix2 = inputDiagonalMatrix_real();
+                    auto* matrix2 = inputDiagonalMatrix<float>();
                     cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
                     int buf;
                     cin >> buf;
@@ -184,7 +185,7 @@ void MenuDiagonalMatrix(){
                 }
                 else if (function == 2){
                     cout << "Enter matrix:" << endl;
-                    auto* matrix = inputDiagonalMatrix_real();
+                    auto* matrix = inputDiagonalMatrix<float>();
                     cout << "Enter scalar: " << endl;
                     float scalar;
                     cin >> scalar;
@@ -203,7 +204,7 @@ void MenuDiagonalMatrix(){
                 }
                 else if (function == 3){
                     cout << "Enter matrix:" << endl;
-                    auto* matrix1 = inputDiagonalMatrix_real();
+                    auto* matrix1 = inputDiagonalMatrix<float>();
                     cout << "Print it?\n\t1 - yes\n\t0 - no" << endl;
                     int buf;
                     cin >> buf;
